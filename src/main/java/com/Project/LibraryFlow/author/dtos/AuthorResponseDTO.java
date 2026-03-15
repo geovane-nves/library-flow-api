@@ -9,8 +9,8 @@ public record AuthorResponseDTO(
         String name,
         String biography
 ) {
-    public AuthorResponseDTO (Author author) {
-        this(
+    public static AuthorResponseDTO fromEntity(Author author) {
+        return new AuthorResponseDTO(
                 author.getId(),
                 author.getName(),
                 author.getBiography()

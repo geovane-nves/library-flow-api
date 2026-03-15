@@ -18,32 +18,29 @@ public class AuthorService {
     @Autowired
     private AuthorRepository repository;
 
-    public AuthorResponseDTO create(AuthorRequestDTO request){
-        Author author = new Author();
-        author.setName(request.name());
-        author.setBiography(request.biography());
-
-        repository.save(author);
-        return new AuthorResponseDTO(author);
+    public AuthorResponseDTO create(AuthorRequestDTO dto){
+        Author author = new Author(
+                dto.name(),
+                dto.biography()
+        );
+        return AuthorResponseDTO.fromEntity(repository.save(author));
     }
 
     public List<AuthorResponseDTO> findAll(){
-        List<Author> list = repository.findAll();
-        return list.stream()
-                .map(AuthorResponseDTO::new)
+        return repository.findAll().stream()
+                .map(AuthorResponseDTO::fromEntity)
                 .toList();
     }
 
     public AuthorResponseDTO findById(UUID id){
-        return repository.findById(id)
-                .map(AuthorResponseDTO::new)
+        Author author = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found"));
+        return AuthorResponseDTO.fromEntity(author);
     }
 
-    public AuthorResponseDTO delete(UUID id){
+    public void delete(UUID id){
         Author author = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
-        repository.deleteById(id);
-        return new AuthorResponseDTO(author);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found"));
+        repository.delete(author);
     }
 }

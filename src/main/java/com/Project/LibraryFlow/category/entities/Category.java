@@ -1,40 +1,38 @@
-package com.Project.LibraryFlow.author.entities;
+package com.Project.LibraryFlow.category.entities;
 
+import com.Project.LibraryFlow.book.entities.Book;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "authors")
-public class Author implements Serializable {
+public class Category implements Serializable {
 
     @Id
     @UuidGenerator
-    @Column(name = "author_id", nullable = false, unique = true)
+    @Column(name = "category_id", nullable = false, unique = true)
     private UUID id;
 
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Biography is required")
-    private String biography;
-
-    public Author() {
+    public Category() {
     }
 
-    public Author(String name, String biography) {
+    public Category(String name) {
         this.name = name;
-        this.biography = biography;
     }
 
-    public UUID getId() { return id; }
+    public UUID getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -44,19 +42,11 @@ public class Author implements Serializable {
         this.name = name;
     }
 
-    public String getBiography() {
-        return biography;
-    }
-
-    public void setBiography(String biography) {
-        this.biography = biography;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Author author = (Author) o;
-        return Objects.equals(id, author.id);
+        Category category = (Category) o;
+        return Objects.equals(id, category.id);
     }
 
     @Override
