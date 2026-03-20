@@ -36,6 +36,7 @@ public class LoanController {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<LoanResponseDTO>> findByUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(service.findByUserId(userId));

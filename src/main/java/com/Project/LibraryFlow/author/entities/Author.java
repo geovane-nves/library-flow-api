@@ -20,10 +20,8 @@ public class Author implements Serializable {
     @Column(name = "author_id", nullable = false, unique = true)
     private UUID id;
 
-    @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Biography is required")
     private String biography;
 
     public Author() {
@@ -36,21 +34,13 @@ public class Author implements Serializable {
 
     public UUID getId() { return id; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getBiography() {
-        return biography;
-    }
+    public String getBiography() { return biography; }
 
-    public void setBiography(String biography) {
-        this.biography = biography;
-    }
+    public void setBiography(String biography) { this.biography = biography; }
 
     @Override
     public boolean equals(Object o) {
@@ -60,7 +50,5 @@ public class Author implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
+    public int hashCode() { return Objects.hashCode(id); }
 }

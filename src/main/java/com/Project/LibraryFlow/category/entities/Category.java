@@ -20,27 +20,18 @@ public class Category implements Serializable {
     @Column(name = "category_id", nullable = false, unique = true)
     private UUID id;
 
-    @NotBlank(message = "Name is required")
     private String name;
 
     public Category() {
     }
 
-    public Category(String name) {
-        this.name = name;
-    }
+    public Category(String name) { this.name = name; }
 
-    public UUID getId() {
-        return id;
-    }
+    public UUID getId() { return id; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
     @Override
     public boolean equals(Object o) {
@@ -50,7 +41,5 @@ public class Category implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
+    public int hashCode() { return Objects.hashCode(id); }
 }

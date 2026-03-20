@@ -51,55 +51,29 @@ public class Loan implements Serializable {
         this.status = LoanStatus.ACTIVE;
     }
 
-    public UUID getId() {
-        return id;
-    }
+    public UUID getId() { return id; }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    public void setId(UUID id) { this.id = id; }
 
-    public User getUser() {
-        return user;
-    }
+    public User getUser() { return user; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public void setUser(User user) { this.user = user; }
 
-    public BookCopy getCopy() {
-        return copy;
-    }
+    public BookCopy getCopy() { return copy; }
 
-    public void setCopy(BookCopy copy) {
-        this.copy = copy;
-    }
+    public void setCopy(BookCopy copy) { this.copy = copy; }
 
-    public Instant getLoanDate() {
-        return loanDate;
-    }
+    public Instant getLoanDate() { return loanDate; }
 
-    public void setLoanDate(Instant loanDate) {
-        this.loanDate = loanDate;
-    }
+    public void setLoanDate(Instant loanDate) { this.loanDate = loanDate; }
 
-    public Instant getDueDate() {
-        return dueDate;
-    }
+    public Instant getDueDate() { return dueDate; }
 
-    public Instant getReturnedAt() {
-        return returnedAt;
-    }
+    public Instant getReturnedAt() { return returnedAt; }
 
-    public void setReturnedAt(Instant returnedAt) {
-        this.returnedAt = returnedAt;
-    }
+    public void setReturnedAt(Instant returnedAt) { this.returnedAt = returnedAt; }
 
-    public LoanStatus getStatus() {
-        return status;
-    }
+    public LoanStatus getStatus() { return status; }
 
-    public void setStatus(LoanStatus status) {
-        this.status = status;
-    }
+    public void setStatus(LoanStatus status) { this.status = status; }
 }

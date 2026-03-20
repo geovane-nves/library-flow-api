@@ -15,6 +15,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.Project.LibraryFlow.fine.entities.Fine;
+import com.Project.LibraryFlow.fine.enums.FineStatus;
+import com.Project.LibraryFlow.fine.repositories.FineRepository;
+
+import org.springframework.scheduling.annotation.Scheduled;
+
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +40,9 @@ public class LoanService {
     @Autowired
     private BookCopyRepository bookCopyRepository;
 
+    @Autowired
+    private FineRepository fineRepository;
+
     public LoanResponseDTO create(LoanRequestDTO dto, Authentication authentication) {
 
         User loggedUser = (User) authentication.getPrincipal();
@@ -38,11 +50,15 @@ public class LoanService {
 
         if (!loggedUser.getId().equals(dto.user())) {
             boolean isAdmin = userType == UserType.ADMIN || userType == UserType.LIBRARIAN;
-            if (!isAdmin) { throw new RuntimeException("You can only create loans for yourself"); }
-        }
-        BookCopy copy = bookCopyRepository.findById(dto.copy()).orElseThrow(() -> new RuntimeException("Book copy not found"));
+            if (!isAdmin) {throw new RuntimeException("You can only create loans for yourself");}}
+        boolean hasPendingFine = fineRepository
+                .findByStatus(FineStatus.PENDING)
+                .stream()
+                .anyMatch(f -> f.getLoan().getUser().getId().equals(loggedUser.getId()));
 
-        if (!copy.isAvailable()) { throw new RuntimeException("Book copy is not available"); }
+        if (hasPendingFine) {throw new RuntimeException("User has pending fines");}
+        BookCopy copy = bookCopyRepository.findById(dto.copy()).orElseThrow(() -> new RuntimeException("Book copy not found"));
+        if (!copy.isAvailable()) {throw new RuntimeException("Book copy is not available");}
 
         Loan loan = new Loan(loggedUser, copy);
         copy.setStatus(CopyStatus.BORROWED);
@@ -55,19 +71,26 @@ public class LoanService {
 
     public List<LoanResponseDTO> findAll() {
         return loanRepository.findAll().stream()
-                .map(LoanResponseDTO::fromEntity)
+                .map(loan -> {
+                    Fine fine = fineRepository.findByLoanId(loan.getId()).orElse(null);
+                    return LoanResponseDTO.fromEntity(loan, fine);
+                })
                 .toList();
     }
 
     public LoanResponseDTO findById(UUID id) {
         Loan loan = loanRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Loan not found"));
-        return LoanResponseDTO.fromEntity(loan);
+        Fine fine = fineRepository.findByLoanId(loan.getId()).orElse(null);
+        return LoanResponseDTO.fromEntity(loan, fine);
     }
 
     public List<LoanResponseDTO> findByUserId(UUID userId) {
         return loanRepository.findByUserId(userId).stream()
-                .map(LoanResponseDTO::fromEntity)
+                .map(loan -> {
+                    Fine fine = fineRepository.findByLoanId(loan.getId()).orElse(null);
+                    return LoanResponseDTO.fromEntity(loan, fine);
+                })
                 .toList();
     }
 
@@ -88,7 +111,8 @@ public class LoanService {
         loanRepository.save(loan);
         bookCopyRepository.save(copy);
 
-        return LoanResponseDTO.fromEntity(loan);
+        Fine fine = fineRepository.findByLoanId(loan.getId()).orElse(null);
+        return LoanResponseDTO.fromEntity(loan, fine);
     }
 
     public void delete(UUID id) {
@@ -100,5 +124,40 @@ public class LoanService {
         bookCopyRepository.save(copy);
 
         loanRepository.delete(loan);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void checkOverdueLoans() {
+        List<Loan> loans = loanRepository.findAll();
+
+        for (Loan loan : loans) {
+            if (loan.getStatus() == LoanStatus.RETURNED) continue;
+            if (loan.getDueDate().isBefore(Instant.now())) {
+                loan.setStatus(LoanStatus.OVERDUE);
+                long daysLate = java.time.temporal.ChronoUnit.DAYS.between(
+                        loan.getDueDate(),
+                        Instant.now()
+                );
+
+                Optional<Fine> existingFine = fineRepository.findByLoanId(loan.getId());
+                if (existingFine.isPresent()) {
+                    Fine fine = existingFine.get();
+                    fine.setDaysLate((int) daysLate);
+                    fine.setAmount(BigDecimal.valueOf(daysLate * 2));
+
+                    fineRepository.save(fine);
+                } else {
+                    Fine fine = new Fine();
+                    fine.setLoan(loan);
+                    fine.setDaysLate((int) daysLate);
+                    fine.setAmount(BigDecimal.valueOf(daysLate * 2));
+                    fine.setStatus(FineStatus.PENDING);
+                    fine.setCreatedAt(Instant.now());
+
+                    fineRepository.save(fine);
+                }
+                loanRepository.save(loan);
+            }
+        }
     }
 }

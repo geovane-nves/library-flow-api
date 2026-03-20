@@ -2,6 +2,7 @@ package com.Project.LibraryFlow.book.entities;
 
 import com.Project.LibraryFlow.author.entities.Author;
 import com.Project.LibraryFlow.category.entities.Category;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,18 +28,15 @@ public class Book implements Serializable {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank(message = "Isbn is required")
     private String isbn;
 
-    @NotNull(message = "Publication year is required")
     private Integer publicationYear;
 
-    @NotBlank(message = "Description is required")
     private String description;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     private Instant createdAt;
 
     public Book() {
@@ -54,63 +52,33 @@ public class Book implements Serializable {
         this.createdAt = Instant.now();
     }
 
-    public UUID getId() {
-        return id;
-    }
+    public UUID getId() { return id; }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    public void setId(UUID id) { this.id = id; }
 
-    public Author getAuthor() {
-        return author;
-    }
+    public Author getAuthor() { return author; }
 
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
+    public void setAuthor(Author author) { this.author = author; }
 
-    public Category getCategory() {
-        return category;
-    }
+    public Category getCategory() { return category; }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+    public void setCategory(Category category) { this.category = category; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public void setTitle(String title) { this.title = title; }
 
-    public String getIsbn() {
-        return isbn;
-    }
+    public String getIsbn() { return isbn; }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
 
-    public Integer getPublicationYear() {
-        return publicationYear;
-    }
+    public Integer getPublicationYear() { return publicationYear; }
 
-    public void setPublicationYear(Integer publicationYear) {
-        this.publicationYear = publicationYear;
-    }
+    public void setPublicationYear(Integer publicationYear) { this.publicationYear = publicationYear; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    public Instant getCreatedAt() { return createdAt; }
 }

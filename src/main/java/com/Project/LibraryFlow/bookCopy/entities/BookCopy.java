@@ -35,39 +35,23 @@ public class BookCopy {
         this.shelfLocation = shelfLocation;
     }
 
-    public UUID getId() {
-        return id;
-    }
+    public UUID getId() { return id; }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    public void setId(UUID id) { this.id = id; }
 
-    public Book getBook() {
-        return book;
-    }
+    public Book getBook() { return book; }
 
-    public void setBook(Book book) {
-        this.book = book;
-    }
+    public void setBook(Book book) { this.book = book; }
 
-    public CopyStatus getStatus() {
-        return status;
-    }
+    public CopyStatus getStatus() { return status; }
 
-    public void setStatus(CopyStatus status) {
-        this.status = status;
-    }
+    public void setStatus(CopyStatus status) { this.status = status; }
 
     public boolean isAvailable() { return this.status == CopyStatus.AVAILABLE; }
 
-    public String getShelfLocation() {
-        return shelfLocation;
-    }
+    public String getShelfLocation() { return shelfLocation; }
 
-    public void setShelfLocation(String shelfLocation) {
-        this.shelfLocation = shelfLocation;
-    }
+    public void setShelfLocation(String shelfLocation) { this.shelfLocation = shelfLocation; }
 
     @Override
     public boolean equals(Object o) {
@@ -77,7 +61,5 @@ public class BookCopy {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
+    public int hashCode() { return Objects.hashCode(id); }
 }

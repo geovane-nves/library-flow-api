@@ -29,4 +29,14 @@ public class GlobalExceptionHandler {
         error.put("email", "Email already exists");
         return error;
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException ex) {
+        ErrorResponse error = new ErrorResponse(
+                400,
+                ex.getMessage(),
+                java.time.Instant.now().toString()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 }
