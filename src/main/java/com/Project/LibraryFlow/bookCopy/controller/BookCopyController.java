@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class BookCopyController {
     @Autowired
     private BookCopyService service;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @PostMapping
     public ResponseEntity<BookCopyResponseDTO> create(@Valid @RequestBody BookCopyRequestDTO request){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
@@ -36,16 +38,19 @@ public class BookCopyController {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @GetMapping("/{id}/stats")
     public ResponseEntity<CopyStatsDTO> copyStats(@PathVariable UUID id) {
         return ResponseEntity.ok(service.stats(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @PutMapping("/{id}")
     public BookCopyResponseDTO update(@PathVariable UUID id, @RequestBody UpdateCopyRequestDTO dto){
         return service.update(id, dto);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<BookCopyResponseDTO> delete(@Valid @PathVariable UUID id){
         service.delete(id);

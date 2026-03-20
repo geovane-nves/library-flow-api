@@ -59,6 +59,8 @@ public class BookCopy {
         this.status = status;
     }
 
+    public boolean isAvailable() { return this.status == CopyStatus.AVAILABLE; }
+
     public String getShelfLocation() {
         return shelfLocation;
     }

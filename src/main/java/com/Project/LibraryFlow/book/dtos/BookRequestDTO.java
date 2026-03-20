@@ -7,10 +7,10 @@ import java.util.UUID;
 
 public record BookRequestDTO(
 
-        @NotNull(message = "AuthorId is required")
+        @NotNull(message = "Author is required")
         UUID authorId,
 
-        @NotNull(message = "CategoryId is required")
+        @NotNull(message = "Category is required")
         UUID categoryId,
 
         @NotBlank(message = "Title is required")
