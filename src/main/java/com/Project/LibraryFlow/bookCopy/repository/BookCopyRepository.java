@@ -9,6 +9,11 @@ import java.util.UUID;
 
 @Repository
 public interface BookCopyRepository extends JpaRepository<BookCopy, UUID> {
+
     long countByBookId(UUID bookId);
+
     long countByBookIdAndStatus(UUID bookId, CopyStatus status);
+
+    boolean existsByBookIdAndStatus(UUID bookId, CopyStatus status);
+
 }
